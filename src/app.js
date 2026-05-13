@@ -3,9 +3,17 @@ import dotenv from "dotenv";
 import authRoutes from "./routes/auth.routes.js";
 import User from "./models/User.js";
 import cookieParser from "cookie-parser";
+import rateLimit from "express-rate-limit";
 dotenv.config();
 
 const app = express();
+const limiter = rateLimit({
+  windowMs: 5 * 60 * 1000,
+  max: 250,
+  message: "Too many requests from this IP, please try again after 5 minutes",
+});
+
+app.use(limiter);
 
 app.use(express.json());
 app.use(cookieParser());
