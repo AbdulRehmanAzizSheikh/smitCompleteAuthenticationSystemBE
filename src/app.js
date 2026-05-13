@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import authRoutes from "./routes/auth.routes.js";
-import User from "./models/User.js";
+import User from "./models/user.js";
 import cookieParser from "cookie-parser";
 import rateLimit from "express-rate-limit";
 dotenv.config();

@@ -1,4 +1,4 @@
-import User from "../../../models/User.js";
+import User from "../../../models/user.js";
 import sendEmail from "../../../utils/email/sendEmail.js";
 import otpEmailTemplate from "../../../utils/email/templates/otpEmailTemplate.js";
 
