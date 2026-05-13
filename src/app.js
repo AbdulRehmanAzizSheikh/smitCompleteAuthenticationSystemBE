@@ -1,12 +1,17 @@
 import express from "express";
 import dotenv from "dotenv";
 import authRoutes from "./routes/auth.routes.js";
-import User from "./models/user.js";
+import User from "./models/User.js";
 import cookieParser from "cookie-parser";
 import rateLimit from "express-rate-limit";
+import Upload from "./models/Upload.js";
+import multer, { diskStorage } from "multer";
+import path from "path";
+import cloudinary from "./config/cloudinary.js";
 dotenv.config();
 
 const app = express();
+
 const limiter = rateLimit({
   windowMs: 5 * 60 * 1000,
   max: 250,
@@ -17,6 +22,53 @@ app.use(limiter);
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
+
+const storage = diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(process.cwd(), "src/uploads"));
+  },
+
+  filename: (req, file, cb) => {
+    cb(null, `\({Date.now()}-\){file.originalname}`);
+  },
+});
+
+const upload = multer({ storage });
+app.post("/api/upload-file", upload.single("file"), async (req, res) => {
+  try {
+    const file = req.file;
+    console.log("file", file);
+
+    if (!file) {
+      return res.status(400).json({
+        status: false,
+        message: "Image is required",
+      });
+    }
+
+    const cloudResponse = await cloudinary.uploader.upload(file.path, {
+      folder: "uploads",
+    });
+
+    const upload = await Upload.create({
+      file: cloudResponse.secure_url,
+    });
+
+    res.status(201).json({
+      status: true,
+      message: "File uploaded successfully",
+      upload,
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      status: false,
+      message: "Server Error",
+    });
+  }
+});
 
 app.use("/api/auth", authRoutes);
 

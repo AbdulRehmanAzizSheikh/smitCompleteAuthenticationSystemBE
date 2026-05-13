@@ -1,4 +1,4 @@
-import User from "../../../models/user.js";
+import User from "../../../models/User.js";
 
 const verifyOtp = async (req, res) => {
   try {
