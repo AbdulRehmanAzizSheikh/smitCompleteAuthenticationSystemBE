@@ -20,11 +20,13 @@ const loginController = async (req, res) => {
       return res.status(401).json({ message: "Invalid password" });
     }
     const token = await generateToken({ id: user._id }, "1h");
-    return res.status(200).json({
-      message: "Login successful",
-      token,
-      user: { _id: user._id, username: user.username, email: user.email },
-    });
+    return res
+      .status(200)
+      .cookie("token", token)
+      .json({
+        message: "Login successful",
+        user: { _id: user._id, username: user.username, email: user.email },
+      });
   } catch (error) {
     return res.status(500).json({ message: "Internal server error", error });
   }

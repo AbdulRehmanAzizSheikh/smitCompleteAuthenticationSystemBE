@@ -36,6 +36,17 @@ const userSchema = new mongoose.Schema(
         type: Date,
       },
     },
+    forgetPassword: {
+      otp: {
+        type: Number,
+      },
+      expiresAt: {
+        type: Date,
+      },
+      token: {
+        type: String,
+      },
+    },
   },
   { timestamps: true },
 );
