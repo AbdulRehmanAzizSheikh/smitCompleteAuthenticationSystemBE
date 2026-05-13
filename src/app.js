@@ -20,12 +20,16 @@ app.use(cookieParser());
 
 app.use("/api/auth", authRoutes);
 
-app.get("/", async (req, res) => {
-  const users = await User.find({});
-  if (!users) {
-    return res.status(404).json({ message: "No users found" });
+app.get("/api/users", async (req, res) => {
+  try {
+    const users = await User.find();
+    if (!users) {
+      return res.status(404).json({ message: "No users found" });
+    }
+    return res.status(200).json({ success: true, data: users });
+  } catch (error) {
+    return res.status(500).json({ success: false, error: error.message });
   }
-  return res.status(200).json({ users });
 });
 
 export default app;
