@@ -33,8 +33,8 @@ const storage = diskStorage({
     cb(null, `\({Date.now()}-\){file.originalname}`);
   },
 });
-const upload = multer({ storage });
 
+const upload = multer({ storage });
 app.post("/api/upload-file", upload.single("file"), async (req, res) => {
   try {
     const file = req.file;
